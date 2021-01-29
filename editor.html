@@ -120,12 +120,12 @@ class E {
   async save() {
     let md = this.e.getMarkdown()
     await fs.promises.writeFile(this.src, md)
-    document.querySelector("iframe").setAttribute("src", "./preview?ts=" + Date.now())
+    document.querySelector("iframe").setAttribute("src", "../preview?ts=" + Date.now())
   }
 }
 var editor = new E()
 document.querySelector("#save").addEventListener("click", async (e) => {
-  editor.save()
+  await editor.save()
 })
 fs.promises.readdir("/home").then((files) => {
   document.querySelector(".sidebar").innerHTML = files.filter((file) => {
