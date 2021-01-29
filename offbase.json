@@ -7,5 +7,11 @@
   }, {
     "from": "/editor",
     "to": "/app/editor.html"
+  }, {
+    "from": "/preview",
+    "to": "/index.html"
+  }, {
+    "from": "/style.css",
+    "to": "/style.css"
   }]
 }
