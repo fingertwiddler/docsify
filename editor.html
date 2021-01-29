@@ -98,7 +98,8 @@ class E {
       usageStatistics: false,
       events: {
         change: () => {
-        }
+        },
+        load: () => { if (this.settings && this.settings.main) this.fill(this.settings.main) }
       },
       hooks: {
         addImageBlobHook: async (blob, callback) => {
@@ -114,7 +115,6 @@ class E {
         }
       }
     });
-    if (this.settings && this.settings.main) this.fill(this.settings.main)
     if (this.settings && this.settings.iframe) document.querySelector("#frame").innerHTML = `<iframe class='hidden' src="./preview"></iframe>`
   }
   async fill(path) {
@@ -145,11 +145,7 @@ class Frame {
     })
   }
 };
-(async () => {
-  let c = await config()
-  const editor = new E(c.settings)
-  new Frame(editor)
-})();
+config().then((c) => { new Frame(new E(c.settings)) })
 </script>
 </body>
 </html>
