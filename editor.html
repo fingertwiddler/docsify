@@ -118,6 +118,8 @@ class E {
     if (this.settings && this.settings.iframe) document.querySelector("#frame").innerHTML = `<iframe class='hidden' src="./preview"></iframe>`
   }
   async fill(path) {
+    document.querySelectorAll(".sidebar .file").forEach((el) => { el.classList.remove("selected") })
+    document.querySelector(`.sidebar [data-filename='${path}']`).classList.add("selected")
     this.src = path;
     let str = await fs.promises.readFile(this.src, "utf8").catch((e) => { })
     if (str) this.e.setMarkdown(str)
@@ -130,18 +132,12 @@ class E {
 class Frame {
   constructor(editor) {
     fs.promises.readdir("/home").then((files) => {
-      document.querySelector(".sidebar").innerHTML = files.filter((file) => {
-        return file !== "offbase.json" && file !== ".git"
-      }).map((file) => {
-        return `<div class='file' data-filename="/home/${file}">${file}</div>`
-      }).join("")
+      document.querySelector(".sidebar").innerHTML = files
+        .filter((file) => { return file !== "offbase.json" && file !== ".git" })
+        .map((file) => { return `<div class='file' data-filename="/home/${file}">${file}</div>` })
+        .join("")
       document.querySelector(".sidebar").addEventListener("click", (e) => {
-        let filename = e.target.getAttribute("data-filename")
-        document.querySelectorAll(".sidebar .file").forEach((el) => {
-          el.classList.remove("selected")
-        })
-        e.target.classList.add("selected")
-        editor.fill(filename)
+        editor.fill(e.target.getAttribute("data-filename"))
       })
       document.querySelector("#save").addEventListener("click", async (e) => {
         await editor.save()
