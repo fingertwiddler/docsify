@@ -9,7 +9,7 @@
     "to": "/home/index.html"
   }, {
     "from": "/preview/:file.:ext",
-    "to": "/docs/{{file}}.{{ext}}"
+    "to": "/home/{{file}}.{{ext}}"
   }, {
     "from": "/style.css",
     "to": "/home/style.css"
