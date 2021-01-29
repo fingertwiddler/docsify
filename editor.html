@@ -128,22 +128,23 @@ class E {
 };
 class Frame {
   constructor(editor) {
-    let files = await fs.promises.readdir("/home")
-    document.querySelector(".sidebar").innerHTML = files.filter((file) => {
-      return file !== "offbase.json" && file !== ".git"
-    }).map((file) => {
-      return `<div class='file' data-filename="/home/${file}">${file}</div>`
-    }).join("")
-    document.querySelector(".sidebar").addEventListener("click", (e) => {
-      let filename = e.target.getAttribute("data-filename")
-      document.querySelectorAll(".sidebar .file").forEach((el) => {
-        el.classList.remove("selected")
+    fs.promises.readdir("/home").then((files) => {
+      document.querySelector(".sidebar").innerHTML = files.filter((file) => {
+        return file !== "offbase.json" && file !== ".git"
+      }).map((file) => {
+        return `<div class='file' data-filename="/home/${file}">${file}</div>`
+      }).join("")
+      document.querySelector(".sidebar").addEventListener("click", (e) => {
+        let filename = e.target.getAttribute("data-filename")
+        document.querySelectorAll(".sidebar .file").forEach((el) => {
+          el.classList.remove("selected")
+        })
+        e.target.classList.add("selected")
+        editor.fill(filename)
       })
-      e.target.classList.add("selected")
-      editor.fill(filename)
-    })
-    document.querySelector("#save").addEventListener("click", async (e) => {
-      await editor.save()
+      document.querySelector("#save").addEventListener("click", async (e) => {
+        await editor.save()
+      })
     })
   }
 };
