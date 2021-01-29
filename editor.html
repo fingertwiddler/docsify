@@ -95,6 +95,7 @@ class E {
       height: '100%',
       initialEditType: 'markdown',
       previewStyle: 'vertical',
+      usageStatistics: false,
       events: {
         change: () => {
         }
@@ -113,7 +114,7 @@ class E {
         }
       }
     });
-    if (this.settings && this.settings.main) fill(this.settings.main)
+    if (this.settings && this.settings.main) this.fill(this.settings.main)
     if (this.settings && this.settings.iframe) document.querySelector("#frame").innerHTML = `<iframe class='hidden' src="./preview"></iframe>`
   }
   async fill(path) {
