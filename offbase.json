@@ -2,7 +2,7 @@
   "name": "docisfy",
   "description": "docsify",
   "routes": [{
-    "from": "/assets/:path",
+    "from": "*/assets/:path",
     "to": "/home/assets/{{path}}"
   }, {
     "from": "/preview",
