@@ -84,14 +84,12 @@ button, .button {
 <script type='module'>
 import { fs, git } from "/offbase.js"
 import Editor from "https://jspm.dev/@toast-ui/editor"
-import matter from "https://jspm.dev/gray-matter"
 class E {
   async render(path) {
     this.src = path;
     let str = await fs.promises.readFile(path, "utf8").catch((e) => { })
     if (str) {
       this.e = new Editor({
-        frontMatter: true,
         el: document.querySelector('#editor'),
         height: '100%',
         initialEditType: 'markdown',
@@ -120,10 +118,10 @@ class E {
   async save() {
     let md = this.e.getMarkdown()
     await fs.promises.writeFile(this.src, md)
-    document.querySelector("iframe").setAttribute("src", "../preview?ts=" + Date.now())
+    document.querySelector("iframe").setAttribute("src", "./preview?ts=" + Date.now())
   }
 }
-var editor = new E()
+const editor = new E()
 document.querySelector("#save").addEventListener("click", async (e) => {
   await editor.save()
 })
