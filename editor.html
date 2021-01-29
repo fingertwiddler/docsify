@@ -137,7 +137,7 @@ class Frame {
   constructor(editor) {
     fs.promises.readdir("/home").then((files) => {
       document.querySelector(".sidebar").innerHTML = files
-        .filter((file) => { return file !== "offbase.json" && file !== ".git" })
+        .filter((file) => { return !(["offbase.json", ".git", "assets"].includes(file)) })
         .map((file) => { return `<div class='file' data-filename="/home/${file}">${file}</div>` })
         .join("")
       if (editor.settings && editor.settings.main) this.select(editor.settings.main)
