@@ -149,8 +149,8 @@ class Frame {
   }
 };
 (async () => {
-  let config = await config()
-  const editor = new E(config.settings)
+  let c = await config()
+  const editor = new E(c.settings)
   new Frame(editor)
 })();
 </script>
