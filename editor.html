@@ -99,7 +99,7 @@ class E {
       events: {
         change: () => {
         },
-        load: () => { if (this.settings && this.settings.main) this.fill(this.settings.main) }
+        load: () => { if (this.settings && this.settings.main) this.select(this.settings.main) }
       },
       hooks: {
         addImageBlobHook: async (blob, callback) => {
@@ -117,9 +117,7 @@ class E {
     });
     if (this.settings && this.settings.iframe) document.querySelector("#frame").innerHTML = `<iframe class='hidden' src="./preview"></iframe>`
   }
-  async fill(path) {
-    document.querySelectorAll(".sidebar .file").forEach((el) => { el.classList.remove("selected") })
-    document.querySelector(`.sidebar [data-filename='${path}']`).classList.add("selected")
+  async select(path) {
     this.src = path;
     let str = await fs.promises.readFile(this.src, "utf8").catch((e) => { })
     if (str) this.e.setMarkdown(str)
@@ -136,16 +134,25 @@ class Frame {
         .filter((file) => { return file !== "offbase.json" && file !== ".git" })
         .map((file) => { return `<div class='file' data-filename="/home/${file}">${file}</div>` })
         .join("")
+      if (editor.settings && editor.settings.main) this.select(editor.settings.main)
       document.querySelector(".sidebar").addEventListener("click", (e) => {
-        editor.fill(e.target.getAttribute("data-filename"))
+        editor.select(e.target.getAttribute("data-filename"))
+        this.select(e.target.getAttribute("data-filename"))
       })
       document.querySelector("#save").addEventListener("click", async (e) => {
         await editor.save()
       })
     })
   }
+  select(path) {
+    document.querySelectorAll(".sidebar .file").forEach((el) => { el.classList.remove("selected") })
+    document.querySelector(`.sidebar [data-filename='${path}']`).classList.add("selected")
+  }
 };
-config().then((c) => { new Frame(new E(c.settings)) })
+config().then((c) => {
+  let editor = new E(c.settings)
+  new Frame(editor)
+})
 </script>
 </body>
 </html>
