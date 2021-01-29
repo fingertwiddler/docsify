@@ -5,7 +5,7 @@
     "from": "/assets/:path",
     "to": "/home/assets/{{path}}"
   }, {
-    "from": "/editor",
+    "from": "/",
     "to": "/app/editor.html"
   }, {
     "from": "/preview",
