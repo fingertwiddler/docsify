@@ -8,6 +8,9 @@
     "from": "/preview",
     "to": "/home/index.html"
   }, {
+    "from": "/preview/:file.:ext",
+    "to": "/docs/{{file}}.{{ext}}"
+  }, {
     "from": "/style.css",
     "to": "/home/style.css"
   }, {
