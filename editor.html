@@ -1,0 +1,145 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.0/codemirror.min.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<style>
+html {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: Sans-serif;
+}
+nav {
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.8);
+}
+.container {
+  flex-grow: 1;
+  display: flex;
+}
+#editor {
+  flex-grow: 1;
+}
+.container iframe {
+  border: none;
+  width: 500px;
+  height: 100%;
+}
+.flexible {
+  flex-grow: 1;
+}
+.brand {
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgba(255,255,255,0.7);
+  font-family: Georgia;
+  font-style: italic;
+  margin: 0 10px;
+}
+button, .button {
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 1px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-block;
+}
+.sidebar .file {
+  cursor: pointer;
+  padding: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  color: rgba(0,0,0,0.8);
+  display: block;
+}
+.file.selected {
+  background: rgba(0,0,0,0.1);
+}
+</style>
+</head>
+<body>
+<nav>
+<a class='brand' href='./home'>Docsify</a>
+<button id='save' class='button'>save</button>
+<a href='/upload' class='button'>upload</a>
+<div class='flexible'></div>
+<a href="./preview" class='button' target='_blank'>preview</a>
+</nav>
+<div class='container'>
+  <div class='sidebar'></div>
+  <div id='editor'></div>
+  <iframe src="./preview"></iframe>
+</div>
+<script type='module'>
+import { fs, git } from "/offbase.js"
+import Editor from "https://jspm.dev/@toast-ui/editor"
+import matter from "https://jspm.dev/gray-matter"
+class E {
+  async render(path) {
+    this.src = path;
+    let str = await fs.promises.readFile(path, "utf8").catch((e) => { })
+    if (str) {
+      this.e = new Editor({
+        frontMatter: true,
+        el: document.querySelector('#editor'),
+        height: '100%',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        events: {
+          change: () => {
+          }
+        },
+        hooks: {
+          addImageBlobHook: async (blob, callback) => {
+            let ab = await blob.arrayBuffer()
+            let bytes = new Uint8Array(ab)
+            const hashBuffer = await crypto.subtle.digest('SHA-256', bytes)
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            await fs.promises.mkdir("/home/assets").catch((e) => {})
+            await fs.promises.writeFile("/home/assets/" + hash, bytes)
+            callback("assets/" + hash, hash)
+            return false;
+          }
+        }
+      });
+      this.e.setMarkdown(str)
+    }
+  }
+  async save() {
+    let md = this.e.getMarkdown()
+    await fs.promises.writeFile(this.src, md)
+    document.querySelector("iframe").setAttribute("src", "./preview?ts=" + Date.now())
+  }
+}
+var editor = new E()
+document.querySelector("#save").addEventListener("click", async (e) => {
+  editor.save()
+})
+fs.promises.readdir("/home").then((files) => {
+  document.querySelector(".sidebar").innerHTML = files.map((file) => {
+    return `<div class='file' data-filename="/home/${file}">${file}</div>`
+  }).join("")
+  document.querySelector(".sidebar").addEventListener("click", (e) => {
+    let filename = e.target.getAttribute("data-filename")
+    document.querySelectorAll(".sidebar .file").forEach((el) => {
+      el.classList.remove("selected")
+    })
+    e.target.classList.add("selected")
+    editor.render(filename)
+  })
+})
+</script>
+</body>
+</html>
