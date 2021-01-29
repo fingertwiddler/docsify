@@ -82,7 +82,7 @@ button, .button {
 <div class='container'>
   <div class='sidebar'></div>
   <div id='editor'></div>
-  <div id='frame'></div>
+  <div id='frame' class='hidden'></div>
 </div>
 <script type='module'>
 import { fs, git, config } from "/offbase.js"
@@ -115,7 +115,10 @@ class E {
         }
       }
     });
-    if (this.settings && this.settings.iframe) document.querySelector("#frame").innerHTML = `<iframe class='hidden' src="./preview"></iframe>`
+    if (this.settings && this.settings.iframe) {
+      document.querySelector("#frame").innerHTML = `<iframe class='hidden' src="./preview"></iframe>`
+      document.querySelector("#frame").classList.remove("hidden")
+    }
   }
   async select(path) {
     this.src = path;
@@ -124,7 +127,7 @@ class E {
   }
   async save() {
     await fs.promises.writeFile(this.src, this.e.getMarkdown())
-    document.querySelector("iframe").setAttribute("src", "./preview?ts=" + Date.now())
+    if (this.settings && this.settings.iframe) document.querySelector("iframe").setAttribute("src", "./preview?ts=" + Date.now())
   }
 };
 class Frame {
