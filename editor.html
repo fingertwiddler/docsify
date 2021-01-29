@@ -72,9 +72,9 @@ button, .button {
 <nav>
 <a class='brand' href='./home'>Docsify</a>
 <button id='save' class='button'>save</button>
-<a href='/upload' class='button'>upload</a>
 <div class='flexible'></div>
 <a href="./preview" class='button' target='_blank'>preview</a>
+<a href='/upload' class='button'>upload</a>
 </nav>
 <div class='container'>
   <div class='sidebar'></div>
@@ -128,7 +128,9 @@ document.querySelector("#save").addEventListener("click", async (e) => {
   editor.save()
 })
 fs.promises.readdir("/home").then((files) => {
-  document.querySelector(".sidebar").innerHTML = files.map((file) => {
+  document.querySelector(".sidebar").innerHTML = files.filter((file) => {
+    return file !== "offbase.json" && file !== ".git"
+  }).map((file) => {
     return `<div class='file' data-filename="/home/${file}">${file}</div>`
   }).join("")
   document.querySelector(".sidebar").addEventListener("click", (e) => {

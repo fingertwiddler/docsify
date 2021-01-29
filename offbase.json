@@ -5,13 +5,13 @@
     "from": "/assets/:path",
     "to": "/home/assets/{{path}}"
   }, {
-    "from": "/",
-    "to": "/app/editor.html"
-  }, {
     "from": "/preview",
-    "to": "/index.html"
+    "to": "/home/index.html"
   }, {
     "from": "/style.css",
-    "to": "/style.css"
+    "to": "/home/style.css"
+  }, {
+    "from": "/",
+    "to": "/app/editor.html"
   }]
 }
